@@ -630,34 +630,4 @@ public class Main {
 
 
 
-
-
-    //    Activity Solutions End
-
-
-// ============================================================================
-// BRIDGE TO 3-TIER ARCHITECTURE
-// ============================================================================
-// Once all features work in Main, split the code into focused layers/packages:
-//
-// - config       : Database connection management
-//                  Examples: DbConnection
-//
-// - model        : Plain data carriers (POJOs / entities)
-//                  Examples: Artist, Album, User
-//
-// - repository   : SQL queries & ResultSet mapping only
-//                  Examples: ArtistRepository, ArtistRepositoryImpl,
-//                            UserRepository, UserRepositoryImpl
-//
-// - service      : Validation guard clauses, business rules & password hashing
-//                  Examples: ArtistService, ArtistServiceImpl,
-//                            UserService, UserServiceImpl
-//
-// - view : Console menus, Scanner prompts & formatted output
-//                  Examples: ArtistView, UserView
-//
-// - Entry Point  : Dependency wiring & startup flow (main())
-//                  Example : App
-// ============================================================================
 }
