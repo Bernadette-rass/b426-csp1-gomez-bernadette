@@ -7,6 +7,7 @@ import com.joysistvi.recordingapp.service.*;
 import com.joysistvi.recordingapp.view.*;
 import com.joysistvi.recordingapp.service.SongService;
 
+import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 // Role-Based Access Control (RBAC)  ADMIN vs. USER
@@ -68,47 +69,71 @@ public class App {
     public void run() {
 
         while (true) {
-            User currentUser = showAuthMenuAndAuthenticate();
-            if (currentUser == null) {
-                System.out.println("\nExiting Recording Studio App. Goodbye!");
+            // Safety net: any unexpected exception returns the user to the auth menu
+            // instead of crashing the whole application.
+            try {
+                User currentUser = showAuthMenuAndAuthenticate();
+                if (currentUser == null) {
+                    System.out.println("\nExiting Recording Studio App. Goodbye!");
+                    break;
+                }
+
+                // Any logged-in user enter the album menu
+                System.out.println("\nWelcome, " + currentUser.getUsername() + " (" + currentUser.getRole() + ")!");
+                pause();
+
+                if ("ADMIN".equalsIgnoreCase(currentUser.getRole())) {
+                    adminDashboard();
+                } else {
+                    userDashboard(currentUser);
+                }
+
+                System.out.println("\nLogged out " + currentUser.getUsername() + ".");
+                pause();
+
+            } catch (NoSuchElementException e) {
+                // Input stream was closed (e.g. Ctrl+D) - nothing more to read, so exit cleanly.
+                System.out.println("\nInput closed. Exiting Recording Studio App.");
                 break;
+            } catch (Exception e) {
+                System.out.println("\nUnexpected error: " + e.getMessage());
+                System.out.println("Returning to the main menu...");
             }
-
-            // Any logged-in user enter the album menu
-            System.out.println("\nWelcome, " + currentUser.getUsername() + " (" + currentUser.getRole() + ")!");
-
-            if ("ADMIN".equalsIgnoreCase(currentUser.getRole())) {
-                adminDashboard();
-            } else {
-                userDashboard(currentUser);
-            }
-
-            System.out.println("\nLogged out " + currentUser.getUsername() + ".");
         }
     }
 
     // Authorization vs Authentication
-    private void adminDashboard(){
-        System.out.println("\n=== ADMIN DASHBOARD ===");
-        System.out.println("1. Song Management");
-        System.out.println("2. Artist Management");
-        System.out.println("3. Album Management");
-        System.out.println("4. Users Management");
+    private void adminDashboard() {
+        while (true) {
+            clearScreen();
+            System.out.println("\n=== ADMIN DASHBOARD ===");
+            System.out.println("1. Song Management");
+            System.out.println("2. Artist Management");
+            System.out.println("3. Album Management");
+            System.out.println("4. Users Management");
+            System.out.println("5. Playlist Management");
 
-        System.out.println("0. Back");
+            System.out.println("0. Logout");
 
-        int choice = promptForInt("Choice: ");
-        switch (choice) {
-            case 1 -> songView.handleMenu();
-            case 2 -> artistView.handleMenu();
-            case 3 -> albumView.handleMenu();
-            case 4 -> userView.handleMenu();
-            case 0 -> {return;}
+            int choice = promptForInt("Choice: ");
+            switch (choice) {
+                case 1 -> songView.handleMenu();
+                case 2 -> artistView.handleMenu();
+                case 3 -> albumView.handleMenu();
+                case 4 -> userView.handleMenu();
+                case 5 -> playlistView.handleMenu();
+                case 0 -> { return; }
+                default -> {
+                    System.out.println("Invalid choice. Please try again.");
+                    pause();
+                }
+            }
         }
     }
 
     private void userDashboard(User currentUser) {
         while (true) {
+            clearScreen();
             System.out.println("\n=== USER DASHBOARD ===");
             System.out.println("1. Browse Artists, Albums, Songs");
             System.out.println("2. Search Songs");
@@ -120,30 +145,51 @@ public class App {
 
             switch (choice) {
                 case 1 -> browseCatalog();
-                case 2 -> songView.promptSearchSongs();
+                case 2 -> {
+                    songView.promptSearchSongs();
+                    pause();
+                }
                 case 3 -> playlistView.handleMenu(currentUser.getId());
                 case 4 -> playlistView.handleManageSongsInPlaylist(currentUser.getId());
                 case 0 -> { return; }
-                default -> System.out.println("Invalid choice. Please try again.");
+                default -> {
+                    System.out.println("Invalid choice. Please try again.");
+                    pause();
+                }
             }
         }
     }
 
     private void browseCatalog() {
-        System.out.println("\n=== BROWSE CATALOG ===");
-        System.out.println("1. View Artists");
-        System.out.println("2. View Albums");
-        System.out.println("3. View Songs");
-        System.out.println("0. Back");
+        while (true) {
+            clearScreen();
+            System.out.println("\n=== BROWSE CATALOG ===");
+            System.out.println("1. View Artists");
+            System.out.println("2. View Albums");
+            System.out.println("3. View Songs");
+            System.out.println("0. Back");
 
-        int choice = promptForInt("Choice: ");
+            int choice = promptForInt("Choice: ");
 
-        switch (choice) {
-            case 1 -> artistView.displayAllArtists();
-            case 2 -> albumView.displayAllAlbums();
-            case 3 -> songView.displayAllSongs();
-            case 0 -> { return; }
-            default -> System.out.println("Invalid Choice: Please try again.");
+            switch (choice) {
+                case 1 -> {
+                    artistView.displayAllArtists();
+                    pause();
+                }
+                case 2 -> {
+                    albumView.displayAllAlbums();
+                    pause();
+                }
+                case 3 -> {
+                    songView.displayAllSongs();
+                    pause();
+                }
+                case 0 -> { return; }
+                default -> {
+                    System.out.println("Invalid Choice: Please try again.");
+                    pause();
+                }
+            }
         }
     }
 
@@ -189,6 +235,13 @@ public class App {
                 System.out.println("Invalid input. Please enter a valid number.");
             }
         }
+    }
+
+    // Waits for the user to press Enter so output (tables, messages) can be read
+    // before the next clearScreen() wipes the terminal.
+    private void pause() {
+        System.out.print("\nPress Enter to continue...");
+        scanner.nextLine();
     }
 
     // Clears the console using ANSI escape codes. Works in real terminals and in

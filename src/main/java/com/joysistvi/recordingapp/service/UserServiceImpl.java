@@ -105,8 +105,13 @@ public class UserServiceImpl implements UserService {
             return null;
         }
 
-        if (BCrypt.checkpw(rawPassword, existing.getPassword())) {
-            return existing;
+        try {
+            if (BCrypt.checkpw(rawPassword, existing.getPassword())) {
+                return existing;
+            }
+        } catch (IllegalArgumentException e) {
+            // Stored password is not a valid BCrypt hash (e.g. plain text inserted manually in the DB)
+            System.out.println("Account error: stored password is invalid. Please contact an admin.");
         }
         return null;
     }

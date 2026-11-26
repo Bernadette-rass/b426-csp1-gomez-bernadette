@@ -5,6 +5,8 @@ import com.joysistvi.recordingapp.service.UserService;
 import java.util.List;
 import java.util.Scanner;
 
+import static com.joysistvi.recordingapp.view.ConsoleOutput.truncate;
+
 public class UserView {
     private final UserService userService;
     private final Scanner scanner;

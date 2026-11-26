@@ -19,6 +19,167 @@ public class PlaylistView {
         this.scanner = scanner;
     }
 
+    // ======================================================================
+    // FULL PLAYLIST MANAGEMENT MENU (Task 4)
+    // CRUD + Archive/Restore + Search on the playlists table.
+    // ======================================================================
+    public void handleMenu() {
+        while (true) {
+            System.out.println("\n=== PLAYLIST MANAGEMENT ===");
+            System.out.println("1. View All Active Playlists");
+            System.out.println("2. Create Playlist");
+            System.out.println("3. Update Playlist");
+            System.out.println("4. Search Playlists");
+            System.out.println("5. Archive Playlist");
+            System.out.println("6. Restore Archived Playlist");
+            System.out.println("7. Delete Playlist (Permanent)");
+            System.out.println("0. Back");
+
+            int choice = promptForInt("Choose an option: ");
+            switch (choice) {
+                case 1 -> displayAllPlaylists();
+                case 2 -> promptCreatePlaylist();
+                case 3 -> promptUpdatePlaylist();
+                case 4 -> promptSearchPlaylists();
+                case 5 -> promptArchivePlaylist();
+                case 6 -> promptRestorePlaylist();
+                case 7 -> promptDeletePlaylist();
+                case 0 -> { return; }
+                default -> System.out.println("Invalid option. Please try again.");
+            }
+        }
+    }
+
+    public void displayAllPlaylists() {
+        printPlaylistTable("----- Active Playlists -----",
+                playlistService.getAllActivePlaylists(), "No active playlists found.");
+    }
+
+    public void promptCreatePlaylist() {
+        System.out.println("\n=== CREATE Playlist ===");
+        System.out.print("Enter playlist name: ");
+        String name = scanner.nextLine();
+        int userId = promptForInt("Enter owner (user) ID: ");
+
+        if (playlistService.createPlaylist(name, userId)) {
+            System.out.println("Playlist '" + name.trim() + "' created successfully!");
+        } else {
+            System.out.println("Failed to create playlist (check input, user ID, or the user may already have a playlist).");
+        }
+    }
+
+    public void promptUpdatePlaylist() {
+        System.out.println("\n=== UPDATE Playlist ===");
+        List<Playlist> active = playlistService.getAllActivePlaylists();
+        printPlaylistTable("----- Active Playlists -----", active, "No active playlists found.");
+        if (active == null || active.isEmpty()) {
+            return;
+        }
+
+        int id = promptForInt("Enter playlist ID to update: ");
+        System.out.print("Enter new playlist name: ");
+        String name = scanner.nextLine();
+        int userId = promptForInt("Enter owner (user) ID: ");
+
+        if (playlistService.updatePlaylist(id, name, userId)) {
+            System.out.println("Playlist ID " + id + " updated successfully!");
+        } else {
+            System.out.println("No playlist updated (check ID or input).");
+        }
+    }
+
+    public void promptSearchPlaylists() {
+        System.out.println("\n=== SEARCH Playlists ===");
+        System.out.print("Enter search keyword: ");
+        String keyword = scanner.nextLine();
+
+        List<Playlist> matches = playlistService.searchPlaylists(keyword);
+        printPlaylistTable("----- Search Results (Keyword: '" + keyword.trim() + "') -----",
+                matches, "No matching active playlists found.");
+    }
+
+    public void promptArchivePlaylist() {
+        System.out.println("\n=== ARCHIVE Playlist ===");
+        List<Playlist> active = playlistService.getAllActivePlaylists();
+        printPlaylistTable("----- Active Playlists -----", active, "No active playlists found.");
+        if (active == null || active.isEmpty()) {
+            return;
+        }
+
+        int id = promptForInt("Enter playlist ID to archive: ");
+        if (playlistService.archivePlaylist(id)) {
+            System.out.println("Playlist ID " + id + " archived successfully!");
+        } else {
+            System.out.println("No playlist archived (check ID or input).");
+        }
+    }
+
+    public void promptRestorePlaylist() {
+        System.out.println("\n=== RESTORE Playlist ===");
+        List<Playlist> archived = playlistService.getAllArchivedPlaylists();
+        printPlaylistTable("----- Archived Playlists -----", archived, "No archived playlists found.");
+
+        // Return early if there is nothing to restore
+        if (archived == null || archived.isEmpty()) {
+            return;
+        }
+
+        int id = promptForInt("Enter playlist ID to restore: ");
+        if (playlistService.restorePlaylist(id)) {
+            System.out.println("Playlist ID " + id + " restored successfully!");
+        } else {
+            System.out.println("No archived playlist restored (check ID or input).");
+        }
+    }
+
+    public void promptDeletePlaylist() {
+        System.out.println("\n=== DELETE Playlist ===");
+        List<Playlist> active = playlistService.getAllActivePlaylists();
+        printPlaylistTable("----- Active Playlists -----", active, "No active playlists found.");
+        if (active == null || active.isEmpty()) {
+            return;
+        }
+
+        int id = promptForInt("Enter playlist ID to permanently delete: ");
+        if (playlistService.deletePlaylist(id)) {
+            System.out.println("Playlist ID " + id + " deleted successfully!");
+        } else {
+            System.out.println("No playlist deleted (check ID, or it may still be in use - try Archive instead).");
+        }
+    }
+
+    private void printPlaylistTable(String header, List<Playlist> playlists, String emptyMessage) {
+        String border = "+------+---------------------------+--------------------+";
+
+        System.out.println("\n" + header);
+        System.out.println(border);
+        System.out.printf("| %-4s | %-25s | %-18s |%n", "ID", "Playlist Name", "Owner");
+        System.out.println(border);
+
+        if (playlists == null || playlists.isEmpty()) {
+            String message = (emptyMessage != null && !emptyMessage.isEmpty())
+                    ? emptyMessage
+                    : "No playlists found.";
+            System.out.printf("| %-52s |%n", truncate(message, 52));
+            System.out.println(border);
+            return;
+        }
+
+        for (Playlist p : playlists) {
+            String name = p.getName() != null ? p.getName() : "";
+            String owner = p.getUsername() != null ? p.getUsername() : "";
+            System.out.printf("| %-4d | %-25s | %-18s |%n",
+                    p.getId(),
+                    truncate(name, 25),
+                    truncate(owner, 18));
+        }
+
+        System.out.println(border);
+    }
+
+    // ======================================================================
+    // PER-USER PLAYLIST MENU (used by the USER dashboard) - unchanged
+    // ======================================================================
     public void handleMenu(int userId) {
         this.currentUserId = userId;
         while (true) {
