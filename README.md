@@ -24,7 +24,6 @@ A Java console application for managing a recording studio's catalog of **artist
 
 ## Features
 
-> 📝 **REPLACE / REVIEW:** List only the features your app really has. Remove anything you did not finish and add any extras you built.
 
 - **Full CRUD** for Artists, Albums, Songs, and Playlists
 - **One playlist per user** (1:1 relationship, enforced by a `UNIQUE` constraint on `playlists.user_id`)
@@ -93,8 +92,6 @@ The **model** package (plain Java objects) and **config** package (database conn
 
 ## Project Structure
 
-> 📝 **REPLACE:** Make this tree match your actual folders and file names. Remove entries you did not create and add any extra ones (for example, `Menu.java` or utility classes).
-
 ```
 RecordingStudioConsoleApp
 ├── pom.xml
@@ -129,8 +126,6 @@ RecordingStudioConsoleApp
 ---
 
 ## Database Design
-
-> 📝 **REPLACE / REVIEW:** Make sure the tables and columns match your own `schema.sql`. If you added columns or tables, update the diagram and the table below.
 
 **Database name:** `recording_studio`
 
@@ -202,8 +197,6 @@ erDiagram
 
 ## Use Cases
 
-> 📝 **REPLACE / REVIEW:** Match this to your own use case diagram (you can embed it with `![Use Case Diagram](screenshots/use-case.png)`).
-
 **Both actors:** Login
 
 **User:**
@@ -239,7 +232,6 @@ git clone https://github.com/<your-github-username>/<your-repository-name>.git
 cd <your-repository-name>
 ```
 
-> 📝 **REPLACE:** your GitHub username and your repository name.
 
 ### 2. Create the database
 
