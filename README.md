@@ -1,6 +1,5 @@
 # 🎵 RecordingStudioConsoleApp
 
-> 📝 **STUDENT NOTES (delete this whole block before pushing):** Every line marked `📝 REPLACE` must be changed to match *your own* project. Read the whole file, replace the placeholders `<like-this>`, and remove all notes. Do not leave any `📝` text in your final README.
 
 A Java console application for managing a recording studio's catalog of **artists, albums, songs, users, and playlists**. Built with **JDBC and MySQL** using a clean **3-tier architecture**, and built as my final project for the **Programming (Java) NC III** course.
 
