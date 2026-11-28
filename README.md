@@ -404,7 +404,7 @@ Choice:
 
 ## Author
 
-**Bernadette A. Gomez
+Bernadette A. Gomez
 Student, Programming (Java) NC III, Joysis Tech Voc Inc.
 GitHub: @Bernadette-rass
 
