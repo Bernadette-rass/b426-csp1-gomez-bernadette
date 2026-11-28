@@ -228,8 +228,8 @@ erDiagram
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/<your-github-username>/<your-repository-name>.git
-cd <your-repository-name>
+git clone https://github.com/Bernadette-rass/b426-csp1-gomez-bernadette.git
+cd b426-csp1-gomez-bernadette
 ```
 
 
@@ -348,46 +348,49 @@ Use the exact `.jar` filename shown by `dir`.
 
 ## Sample Usage
 
-> 📝 **REPLACE:** The output below is only an example. Run your own app, copy your real menus, and add screenshots (put images in a `screenshots/` folder and use `![Login screen](screenshots/login.png)`).
-
 ```
-===== Welcome to Recording Studio =====
+=== RECORDING STUDIO APP ===
 1. Login
-2. Register
+2. Register Account
 0. Exit
-Choose: 1
+Choose an option: 1
 
-===== Songs =====
-1. View all songs
-2. Search song
-3. Add song              (Admin only)
-4. Update song           (Admin only)
-5. Archive song          (Admin only)
-6. Restore song          (Admin only)
-7. View archived songs   (Admin only)
-0. Back
+=== LOGIN ===
+Enter username: admin
+Enter password: admin123
+Login successful! Welcome, admin (ADMIN).
 
------ Update Song -----
-ID    Title                     Genre           Length   Album
-1     Ligaya                    OPM Rock        4:40     Cutterpillow
-Song ID to update: 1
-New Title [Ligaya] (Enter to keep):
+Welcome, admin (ADMIN)!
+
+Press Enter to continue...
+
+=== ADMIN DASHBOARD ===
+1. Song Management
+2. Artist Management
+3. Album Management
+4. Users Management
+5. Playlist Management
+0. Logout
+Choice: 
 ```
 
 ---
 
 ## Design Decisions
 
-> 📝 **REPLACE / REVIEW:** Keep only the decisions that match what *you* actually implemented. Add your own decisions and explain why you made them.
-
-- **Role stored as `VARCHAR`** (`USER` or `ADMIN`) instead of a boolean or enum to keep the code simple and beginner-friendly.
-- **Soft delete for songs** (`is_archived`) so playlists and history are not broken by a delete.
-- **BCrypt for passwords**: plain-text passwords are never stored.
-- **Service owns validation, View owns messages**: services stay silent and return results, so the user never sees the same error twice.
-- **Repositories never print success messages**: they only log SQL errors.
-- **Interfaces for services and repositories** so implementations can be swapped (for example, for testing).
-- **Song `length` stored as text** (for example, `3:45`) for simplicity.
-
+- Full management for Artists, Albums, Songs, Users, and Playlists.
+- Each module supports: view active records, create, update, keyword search, archive (soft delete), restore, and permanent delete.
+- Register and Login with BCrypt password hashing and verification (done only in UserServiceImpl).
+- Role-Based Access Control (RBAC):
+- ADMIN gets the admin dashboard (Song, Artist, Album, Users, and Playlist management).
+- USER gets the user dashboard (browse catalog, search songs, manage own playlist, add/remove songs).
+- Admin: full playlist management (CRUD, search, archive/restore).
+- User: one playlist per user, with songs added or removed through the playlist_songs junction table.
+- Records use an is_archived flag. Archived records are hidden from active lists and can be restored. The restore screen shows archived records first, and returns early if there are none.
+- Guard clauses in the service layer: non-blank text, IDs greater than 0, album year between 1900 and 2100, valid email format, and password of at least 6 characters.
+- Numeric prompts use promptForInt(...), so letters and symbols don't crash the app.
+- loginUser catches an invalid stored hash, so the app doesn't crash.
+- run() has a safety net, so unexpected exceptions return the user to the auth menu.
 ---
 
 ## Troubleshooting
@@ -405,14 +408,14 @@ New Title [Ligaya] (Enter to keep):
 
 ## Author
 
-**<Your Full Name>**
+Bernadette A. Gomez
 Student, Programming (Java) NC III, Joysis Tech Voc Inc.
-GitHub: [@<your-github-username>](https://github.com/<your-github-username>)
-
-> 📝 **REPLACE:** your name, your GitHub username, and your batch or section if required. Credit your instructor or any resources you used (optional).
+GitHub: @Bernadette-rass
 
 ---
 
 ## Acknowledgements
 
 - Course instructor: Jareth Ronquillo, Joysis Tech Voc Inc.
+
+Thank you very much sir Jareth and the other admin for your patience and dedication in teaching and guiding us on this journey. <3
