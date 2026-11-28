@@ -253,10 +253,6 @@ private static final String USER = "root";
 private static final String PASSWORD = "your_password_here";
 ```
 
-> 📝 **REPLACE:** If your `DbConnection` class or constants are named differently, update the path and code above.
-
-> ⚠️ Never commit real passwords to GitHub. Keep your local credentials out of version control, or load them from environment variables.
-
 ### 4. Create an admin account (optional)
 
 1. Run the app and register a normal account.
@@ -408,10 +404,8 @@ Choice:
 
 ## Author
 
-Bernadette A. Gomez
-
+**Bernadette A. Gomez
 Student, Programming (Java) NC III, Joysis Tech Voc Inc.
-
 GitHub: @Bernadette-rass
 
 ---
